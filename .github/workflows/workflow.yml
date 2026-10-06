@@ -61,10 +61,10 @@ jobs:
         uses: actions/cache@v6
         with:
           path: Library
-          key: Library-${{ env.TARGET_PLATFORM }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: Library-${{ env.TARGET_PLATFORM }}-${{ github.ref_name }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
+            Library-${{ env.TARGET_PLATFORM }}-main-
             Library-${{ env.TARGET_PLATFORM }}-
-            Library-
 
       - name: Build Unity Game
         uses: game-ci/unity-builder@v4
