@@ -76,6 +76,7 @@ jobs:
           targetPlatform: ${{ env.TARGET_PLATFORM }}
           buildProfile: "Assets/Settings/Build Profiles/Windows.asset"
           buildsPath: Builds
+          cliVersion: 'v0.1.72'
 
       - name: Zip and Upload Compiled Game Build
         uses: actions/upload-artifact@v7
