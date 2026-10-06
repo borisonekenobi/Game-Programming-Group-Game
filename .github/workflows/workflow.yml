@@ -1,4 +1,4 @@
-﻿name: workflow
+name: workflow
 
 on:
   push:
@@ -58,7 +58,7 @@ jobs:
           lfs: true
 
       - name: Cache Library folder
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: Library
           key: Library-${{ env.TARGET_PLATFORM }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
