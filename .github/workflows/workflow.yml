@@ -1,0 +1,85 @@
+﻿name: workflow
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  TARGET_PLATFORM: StandaloneWindows64
+
+jobs:
+  upload-readme:
+    name: Upload README
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Upload README.md
+        uses: actions/upload-artifact@v7
+        with:
+          name: README.md
+          path: README.md
+          if-no-files-found: error
+
+  upload-source:
+    name: Zip & Upload Source
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          lfs: true
+
+      - name: Zip and Upload Folders
+        uses: actions/upload-artifact@v7
+        with:
+          name: App3_source.zip
+          path: |
+            .github/
+            Assets/
+            Packages/
+            ProjectSettings/
+            .gitignore
+            LICENSE
+            README.md
+          include-hidden-files: true
+          if-no-files-found: error
+
+  build-and-upload-game:
+    name: Build & Upload Game
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          lfs: true
+
+      - name: Cache Library folder
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ env.TARGET_PLATFORM }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-${{ env.TARGET_PLATFORM }}-
+            Library-
+
+      - name: Build Unity Game
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: ${{ env.TARGET_PLATFORM }}
+          buildProfile: "Assets/Settings/Build Profiles/Windows.asset"
+          buildsPath: Builds
+
+      - name: Zip and Upload Compiled Game Build
+        uses: actions/upload-artifact@v7
+        with:
+          name: App3_executable.zip
+          path: Builds/
+          if-no-files-found: error
