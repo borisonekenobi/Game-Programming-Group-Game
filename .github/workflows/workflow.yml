@@ -67,7 +67,7 @@ jobs:
             Library-${{ env.TARGET_PLATFORM }}-
 
       - name: Build Unity Game
-        uses: game-ci/unity-builder@v4
+        uses: game-ci/unity-builder@v6
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
